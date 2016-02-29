@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class cloth_motion: MonoBehaviour {
 
@@ -119,15 +120,56 @@ public class cloth_motion: MonoBehaviour {
 
 	void Strain_Limiting()
 	{
-        foreach(int edge in edge_list)
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        Vector3[] vertices = mesh.vertices;
+        Vector3[] temp_X = new Vector3[vertices.Length];
+        Vector3[] x_new = new Vector3[vertices.Length];
+        int[] temp_N = new int[vertices.Length];
+        HashSet<int> vi_list = new HashSet<int>();
+        HashSet<int> vj_list = new HashSet<int>();
+        for (int e = 0; e < edge_list.Length / 2; e++)
         {
+            int v0 = edge_list[e * 2];
+            int v1 = edge_list[e * 2 + 1];
+
+            Vector3 v_i = vertices[v0];
+            Vector3 v_j = vertices[v1];
+
+            float length = (v_i - v_j).magnitude;
+
+            if (length > L0[e])
+            {
+                vi_list.Add(v0);
+                vj_list.Add(v1);
+
+                Vector3 x_i = 0.5f * (v_i + v_j + L0[e] * (v_i - v_j) / (v_i - v_j).magnitude);
+                Vector3 x_j = 0.5f * (v_j + v_i + L0[e] * (v_j - v_i) / (v_j - v_i).magnitude);
+
+                temp_X[v0] += x_i;
+                temp_X[v1] += x_j;
+                temp_N[v0]++;
+                temp_N[v1]++;
+            }
         }
-	}
+        foreach(int i in vi_list)
+        {
+            Vector3 xi_new = (0.2f * vertices[i] + temp_X[i]) / (0.2f + temp_N[i]);
+            velocities[i] += (xi_new - vertices[i]) / t;
+            vertices[i] = xi_new;
+        }
+        foreach (int j in vj_list)
+        {
+            Vector3 xj_new = (0.2f * vertices[j] + temp_X[j]) / (0.2f + temp_N[j]);
+            velocities[j] += (xj_new - vertices[j]) / t;
+            vertices[j] = xj_new;
+        }
+    }
 
 
 	void Collision_Handling()
 	{
-
+        GameObject sphere = GameObject.Find("Sphere");
+        Vector3 center = sphere.transform.TransformPoint(0,0,0);
 	}
 
 	// Update is called once per frame
@@ -147,6 +189,13 @@ public class cloth_motion: MonoBehaviour {
         mesh.vertices = vertices;
 
 		mesh.RecalculateNormals ();
+
+        for(int i = 0; i < 64; i++)
+        {
+            Strain_Limiting();
+        }
+
+        Collision_Handling();
 
 	}
 }
