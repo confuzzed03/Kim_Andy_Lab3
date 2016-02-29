@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2015
+# Visual Studio 2013
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kim_Andy_Lab3.CSharp", "Kim_Andy_Lab3.CSharp.csproj", "{E497A328-900A-D089-0F80-71D1797CD960}"
 EndProject
 Global

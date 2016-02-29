@@ -64,11 +64,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Rigid_Bunny.cs" />
+    <Compile Include="Assets\_Scripts\CameraController.cs" />
+    <Compile Include="Assets\_Scripts\PlayerController.cs" />
     <Compile Include="Assets\cloth_motion.cs" />
     <Compile Include="Assets\sphere_motion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\cloth_shader.shader" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>
